@@ -40,6 +40,7 @@ public class ResourcesConfig implements WebMvcConfigurer {
         registry.addInterceptor(repeatSubmitInterceptor).addPathPatterns("/**");
         registry.addInterceptor(pageInterceptor).addPathPatterns("/**")
             .excludePathPatterns("/swagger-resources/**")
-            .excludePathPatterns("/v2/api-docs");
+            .excludePathPatterns("/v2/api-docs")
+            .excludePathPatterns("/doc.html");
     }
 }

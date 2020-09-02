@@ -1,0 +1,75 @@
+package com.weekly.auth.helper;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTDecodeException;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.weekly.common.exception.TokenException;
+import org.apache.commons.lang3.time.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+
+@Component
+public class TokenHelper {
+
+    /**
+     * 校验token是否正确
+     * @param token token
+     * @param secret 平台分配的秘钥
+     * @return 是否正确
+     */
+    public boolean verify(String token, String appId, String secret) throws TokenException {
+        try {
+            Algorithm algorithm = Algorithm.HMAC256(secret);
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .withClaim("appId", appId)
+                    .build();
+            verifier.verify(token);
+            return true;
+        } catch (Exception exception) {
+            throw new TokenException();
+        }
+    }
+
+    /**
+     * 获取平台用户appid
+     * @param token
+     * @return
+     * @throws TokenException
+     */
+    public String getAppid(String token) throws TokenException {
+        try {
+            DecodedJWT jwt = JWT.decode(token);
+            return jwt.getClaim("appId").asString();
+        } catch (JWTDecodeException e) {
+            throw new TokenException();
+        }
+    }
+
+    /**
+     *  签名
+     * @param appId 接入平台分配的appId
+     * @param secret 平台分配的秘钥
+     * @param time 加密失效时间
+     * @return 加密的token
+     */
+    public String sign(String appId, String secret, Integer time) throws TokenException {
+        Algorithm algorithm = Algorithm.HMAC256(secret);
+        return JWT.create()
+                .withClaim("appId", appId)
+                .withExpiresAt(DateUtils.addDays(new Date(), time))
+                .sign(algorithm);
+    }
+
+    @Autowired
+    HttpServletRequest request;
+
+    public String getToken() {
+        String token = request.getHeader("Authorization");
+        return token;
+    }
+}

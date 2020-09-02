@@ -13,7 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @date: 2020/09/02
  */
 @SpringBootApplication(scanBasePackages = "com.weekly")
-@MapperScan("com.weekly.*.mapper")
+//@MapperScan("com.weekly.*.mapper")
+@MapperScan("com.weekly.mapper")
 public class AppServer {
     public static void main(String[] args) {
         SpringApplication.run(AppServer.class, args);

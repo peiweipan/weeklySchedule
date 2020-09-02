@@ -2,9 +2,9 @@ package com.weekly.common.advice;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.weekly.auth.ResultBean;
 import com.weekly.common.annotation.IgnoreRestHandler;
 import com.weekly.common.annotation.RestHandler;
-import com.weekly.common.pojo.vo.ResultBean;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;

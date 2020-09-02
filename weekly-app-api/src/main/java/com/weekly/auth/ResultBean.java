@@ -1,4 +1,4 @@
-package com.weekly.common.pojo.vo;
+package com.weekly.auth;
 
 public class ResultBean<T> {
 

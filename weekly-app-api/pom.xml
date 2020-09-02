@@ -13,14 +13,19 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.weekly</groupId>
-            <artifactId>weekly-core</artifactId>
-            <version>${project.parent.version}</version>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
         </dependency>
         <dependency>
             <groupId>com.weekly</groupId>
             <artifactId>weekly-common</artifactId>
             <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.weekly</groupId>
+            <artifactId>weekly-app-core</artifactId>
+            <version>2.2.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
