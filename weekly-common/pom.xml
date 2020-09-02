@@ -30,6 +30,19 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.mindrot.bcrypt</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.firefly</groupId>
+            <artifactId>firefly-errcode</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

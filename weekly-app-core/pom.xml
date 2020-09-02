@@ -236,12 +236,6 @@
             <artifactId>fastjson</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>com.firefly</groupId>
-            <artifactId>firefly-profile</artifactId>
-            <version>${firefly-profile.version}</version>
-        </dependency>
-
     </dependencies>
 
 </project>
