@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weekly.summary.mapper.SummaryMapper">
+
+    <resultMap id="SummaryResult" type="com.weekly.summary.pojo.vo.WeeklySummaryVo">
+        <id property="SummaryId" column="Summary_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="finishQuality" column="finishQuality"/>
+        <result property="jobCount" column="jobCount"/>
+        <result property="jobDescription" column="jobDescription"/>
+        <result property="offDays" column="offDays"/>
+        <result property="overtimeDays" column="overtimeDays"/>
+        <result property="jobLevel" column="jobLevel"/>
+        <result property="workPerformance" column="workPerformance"/>
+        <result property="taskWeek" column="task_week"/>
+        <result property="workDays" column="workDays"/>
+    </resultMap>
+
+    <select id="viewWeeklySummary" resultMap="SummaryResult">
+        select * from weekly_summary where user_id = #{userId} and task_week =#{taskWeek} and school_year = #{schoolYear}
+    </select>
+
+    <update id="autoUpdateWeeklySummary">
+        update weekly_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="finishQuality != null ">finishQuality = #{finishQuality},</if>
+            <if test="jobCount != null ">jobCount = #{jobCount},</if>
+            <if test="offDays != null ">offDays = #{offDays},</if>
+            <if test="overtimeDays != null ">overtimeDays = #{overtimeDays},</if>
+            <if test="jobDescription != null and jobDescription != ''">jobDescription = #{jobDescription},</if>
+            <if test="jobLevel != null ">jobLevel = #{jobLevel},</if>
+            <if test="workPerformance != null ">workPerformance = #{workPerformance},</if>
+        </trim>
+        where user_id = #{userId} and task_week =#{taskWeek} and school_year = #{schoolYear}
+    </update>
+
+    <insert id="createEmptySummary">
+        insert into weekly_summary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">user_id,</if>
+            <if test="taskWeek != null  ">task_week,</if>
+            <if test="schoolYear != null  and schoolYear != ''">school_year,</if>
+            <if test="workDays != null  ">workDays,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">#{userId},</if>
+            <if test="taskWeek != null  ">#{taskWeek},</if>
+            <if test="schoolYear != null  and schoolYear != ''">#{schoolYear},</if>
+            <if test="workDays != null  ">#{workDays},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWeeklySummaryByUser">
+        update weekly_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="offDays != null ">offDays = #{offDays},</if>
+            <if test="overtimeDays != null ">overtimeDays = #{overtimeDays},</if>
+            <if test="jobDescription != null and jobDescription != ''">jobDescription = #{jobDescription},</if>
+        </trim>
+        where user_id = #{userId} and task_week =#{taskWeek} and  school_year = #{schoolYear}
+    </update>
+
+    <resultMap id="WeeklyPerformance" type="com.weekly.summary.pojo.vo.HalfYearPerformanceVo">
+        <result property="week" column="task_week"/>
+        <result property="HalfYearPerformance" column="workPerformance"/>
+    </resultMap>
+
+    <select id="getWeeklyPerformanceHalfYear" resultMap="WeeklyPerformance">
+        select task_week,workPerformance
+        from weekly_summary where user_id = #{userId} and school_year = #{schoolYear}
+    </select>
+
+    <resultMap id="YearInfo" type="com.weekly.summary.pojo.vo.HalfYearInfoVo">
+        <result property="HalfYearOffDays" column="offDayCount"/>
+        <result property="HalfYearOvertimeDays" column="overtimeDaysCount"/>
+        <result property="HalfYearPerformance" column="performanceCount"/>
+    </resultMap>
+
+    <select id="sumPerformanceByYear" resultMap="YearInfo">
+        select sum(offDays) offDayCount ,sum(overtimeDays) overtimeDaysCount,sum(workPerformance) performanceCount
+        from weekly_summary where user_id = #{userId} and school_year = #{schoolYear}
+    </select>
+
+    <resultMap id="FinishQuality" type="com.weekly.summary.pojo.vo.FinishQualityVo">
+        <result property="userId" column="user_id"/>
+        <result property="nickname" column="nick_name"/>
+        <result property="taskWeek" column="task_week"/>
+        <result property="finishQuality" column="finishQuality"/>
+    </resultMap>
+
+    <select id="viewAllFinishQuality" resultMap="FinishQuality">
+        select task_week,finishQuality from weekly_summary
+        where user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+    
+    <select id="viewFinishQualityByWeek" resultMap="FinishQuality">
+        select s.user_id,u.nick_name,task_week,finishQuality from weekly_summary s left join sys_user u
+        on s.user_id = u.user_id
+        where task_week between #{startWeek} and #{endWeek}
+        and  school_year = #{schoolYear}
+        <if test="allGeneralUserIds != null and allGeneralUserIds.size() > 0 and allGeneralUserIds != '' " >and s.user_id in
+            <foreach collection="allGeneralUserIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+
+    <resultMap id="WeeklyPerformanceResult" type="com.weekly.summary.pojo.vo.WeeklyPerformanceVo">
+        <result property="nickname" column="nick_name"/>
+        <result property="taskWeek" column="task_week"/>
+        <result property="workPerformance" column="workPerformance"/>
+    </resultMap>
+
+    <select id="viewAllWeeklyPerformance" resultMap="WeeklyPerformanceResult">
+        select task_week,workPerformance from weekly_summary
+        where user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+
+    <select id="viewWeeklyPerformanceByWeek" resultMap="WeeklyPerformanceResult">
+        select s.user_id,u.nick_name,task_week,workPerformance from weekly_summary s left join sys_user u
+        on s.user_id = u.user_id
+        where task_week between #{startWeek} and #{endWeek}
+        and school_year = #{schoolYear}
+        <if test="allGeneralUserIds != null and allGeneralUserIds.size() > 0 and allGeneralUserIds != '' " >and s.user_id in
+            <foreach collection="allGeneralUserIds" item="id" open="(" separator="," close=")">
+                #{id}
+            </foreach>
+        </if>
+    </select>
+</mapper>

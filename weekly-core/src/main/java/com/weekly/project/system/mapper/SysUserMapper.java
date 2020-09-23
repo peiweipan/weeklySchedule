@@ -5,12 +5,14 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.weekly.project.system.domain.SysUser;
+import org.springframework.stereotype.Repository;
 
 /**
  * 用户表 数据层
  * 
  * @author weekly
  */
+@Repository
 public interface SysUserMapper
 {
     /**

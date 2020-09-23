@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weekly.workdays.mapper.WorkDaysSettingMapper">
+
+    <select id="getWorkDaysBySetting" resultType="INTEGER">
+        select work_days from workDays_setting
+        where schoolyear_semester = #{schoolYear} and week = #{week}
+    </select>
+
+    <insert id="addSetting">
+        insert into workdays_setting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="workDays != null ">work_days,</if>
+            <if test="week != null  ">week,</if>
+            <if test="schoolYear != null  and schoolYear != ''">schoolyear_semester,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="workDays != null ">#{workDays},</if>
+            <if test="week != null  ">#{week},</if>
+            <if test="schoolYear != null  and schoolYear != ''">#{schoolYear},</if>
+        </trim>
+    </insert>
+
+</mapper>
+

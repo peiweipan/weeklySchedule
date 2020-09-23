@@ -9,13 +9,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
@@ -95,15 +90,36 @@ public class ExcelUtil<T>
      */
     private List<T> list;
 
+    private List<Map<String, Object>> listByMap;
+
     /**
      * 注解列表
      */
     private List<Object[]> fields;
 
+    private List<String> fieldList;
+
     /**
      * 实体对象
      */
     public Class<T> clazz;
+
+    @Excel(name = "default")
+    private static Object defaultExcelObj;
+
+    /**
+     * 默认的注解对象
+     */
+    private static Excel defaultExcel;
+
+    static {
+        try {
+            Field declaredField = ExcelUtil.class.getDeclaredField("defaultExcelObj");
+            declaredField.setAccessible(true);
+            defaultExcel = declaredField.getAnnotation(Excel.class);
+        } catch (NoSuchFieldException e) {
+        }
+    }
 
     public ExcelUtil(Class<T> clazz)
     {
@@ -121,6 +137,32 @@ public class ExcelUtil<T>
         this.type = type;
         createExcelField();
         createWorkbook();
+    }
+
+    public void initByMap(List<Map<String, Object>> list, List<String> fieldList, String sheetName, Type type) {
+        if (list == null)
+        {
+            list = Collections.emptyList();
+        }
+        this.listByMap = list;
+        this.sheetName = sheetName;
+        this.type = type;
+        createExcelFieldByMap(fieldList);
+        createWorkbook();
+    }
+
+    private void createExcelFieldByMap(List<String> fieldList) {
+        if (fieldList != null) {
+            this.fieldList = fieldList;
+            return;
+        }
+        this.fields = new ArrayList<Object[]>();
+        this.fieldList = new ArrayList<>();
+        if (this.listByMap.isEmpty()) {
+            return;
+        }
+        Map<String, Object> fieldsMap = this.listByMap.get(0);
+        this.fieldList.addAll(fieldsMap.keySet());
     }
 
     /**
@@ -292,6 +334,93 @@ public class ExcelUtil<T>
         return exportExcel();
     }
 
+    public AjaxResult exportExcelByMap(List<Map<String, Object>> list, String sheetName)
+    {
+        this.initByMap(list, null, sheetName, Type.EXPORT);
+        return exportExcelByMap();
+    }
+
+    public AjaxResult exportExcelByMap(List<Map<String, Object>> list, String sheetName, List<String> fieldList)
+    {
+        this.initByMap(list, fieldList, sheetName, Type.EXPORT);
+        return exportExcelByMap();
+    }
+
+    private AjaxResult exportExcelByMap() {
+        OutputStream out = null;
+        try
+        {
+            // 取出一共有多少个sheet.
+            double sheetNo = Math.ceil(listByMap.size() / sheetSize);
+            for (int index = 0; index <= sheetNo; index++)
+            {
+                createSheet(sheetNo, index);
+
+                // 产生一行
+                Row row = sheet.createRow(0);
+                int column = 0;
+                // 写入各个字段的列头名称
+                for (String field : this.fieldList) {
+                    this.createCell(field, row, column++);
+                }
+                if (Type.EXPORT.equals(type))
+                {
+                    fillExcelDataByMap(index, row);
+                }
+            }
+            String filename = encodingFilename(sheetName);
+            out = new FileOutputStream(getAbsoluteFile(filename));
+            wb.write(out);
+            return AjaxResult.success(filename);
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel异常{}", e.getMessage());
+            throw new CustomException("导出Excel失败，请联系网站管理员！");
+        }
+        finally
+        {
+            if (wb != null)
+            {
+                try
+                {
+                    wb.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+            if (out != null)
+            {
+                try
+                {
+                    out.close();
+                }
+                catch (IOException e1)
+                {
+                    e1.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private void fillExcelDataByMap(int index, Row row) {
+        int startNo = index * sheetSize;
+        int endNo = Math.min(startNo + sheetSize, listByMap.size());
+        for (int i = startNo; i < endNo; i++)
+        {
+            row = sheet.createRow(i + 1 - startNo);
+            // 得到导出对象.
+//            T vo = (T) list.get(i);
+            Map<String, Object> vo = this.listByMap.get(i);
+            int column = 0;
+            for (String field : this.fieldList) {
+                this.addCell(row, vo.get(field), column++);
+            }
+        }
+    }
+
     /**
      * 对list数据源将其里面的数据导入到excel表单
      * 
@@ -457,6 +586,20 @@ public class ExcelUtil<T>
     }
 
     /**
+     * 创建单元格
+     */
+    public Cell createCell(String attr, Row row, int column)
+    {
+        // 创建列
+        Cell cell = row.createCell(column);
+        // 写入列信息
+        cell.setCellValue(attr);
+        setDataValidation(defaultExcel, row, column);
+        cell.setCellStyle(styles.get("header"));
+        return cell;
+    }
+
+    /**
      * 设置单元格信息
      * 
      * @param value 单元格值
@@ -525,6 +668,50 @@ public class ExcelUtil<T>
 
                 // 用于读取对象中的属性
                 Object value = getTargetValue(vo, field, attr);
+                String dateFormat = attr.dateFormat();
+                String readConverterExp = attr.readConverterExp();
+                if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))
+                {
+                    cell.setCellValue(DateUtils.parseDateToStr(dateFormat, (Date) value));
+                }
+                else if (StringUtils.isNotEmpty(readConverterExp) && StringUtils.isNotNull(value))
+                {
+                    cell.setCellValue(convertByExp(String.valueOf(value), readConverterExp));
+                }
+                else
+                {
+                    // 设置列类型
+                    setCellVo(value, attr, cell);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("导出Excel失败{}", e);
+        }
+        return cell;
+    }
+
+    /**
+     * 添加单元格
+     */
+    public Cell addCell(Row row, Object value, int column)
+    {
+        Excel attr = defaultExcel;
+
+        Cell cell = null;
+        try
+        {
+            // 设置行高
+            row.setHeight((short) (attr.height() * 20));
+            // 根据Excel中设置情况决定是否导出,有些情况需要保持为空,希望用户填写这一列.
+            if (attr.isExport())
+            {
+                // 创建cell
+                cell = row.createCell(column);
+                cell.setCellStyle(styles.get("data"));
+
+                // 用于读取对象中的属性
                 String dateFormat = attr.dateFormat();
                 String readConverterExp = attr.readConverterExp();
                 if (StringUtils.isNotEmpty(dateFormat) && StringUtils.isNotNull(value))

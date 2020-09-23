@@ -34,6 +34,12 @@
 
     <dependencies>
 
+        <dependency>
+            <groupId>com.weekly</groupId>
+            <artifactId>weekly-common</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+
         <!-- SpringBoot 核心包 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -263,6 +269,10 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.firefly</groupId>
+            <artifactId>firefly-errcode</artifactId>
         </dependency>
 
     </dependencies>

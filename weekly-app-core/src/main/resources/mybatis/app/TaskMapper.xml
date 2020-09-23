@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weekly.mapper.TaskMapper">
+
+    <resultMap id="TaskResult" type="com.weekly.user.pojo.vo.TaskListVo">
+        <id property="taskId" column="task_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="taskName" column="task_name"/>
+        <result property="expResult" column="exp_result"/>
+        <result property="taskComment" column="task_comment"/>
+        <result property="taskStatus" column="task_status"/>
+        <result property="taskLevel" column="task_level"/>
+        <result property="taskDate" column="task_date"/>
+        <result property="dayOfWeek" column="dayofweek"/>
+        <result property="taskWeek" column="task_week"/>
+        <result property="schoolYear" column="school_year"/>
+    </resultMap>
+
+    <select id="showUserTask" resultMap="TaskResult">
+        select * from task where task_week=#{taskWeek} and user_id=#{userId} and school_year=#{schoolYear} and is_deleted=0
+    </select>
+
+    <select id="showAllUserTask" resultMap="TaskResult">
+        select * from task where task_week=#{taskWeek} and school_year=#{schoolYear} and is_deleted = 0
+    </select>
+    
+    <select id="showAllGeneralUserTask" resultMap="TaskResult">
+        select * from task where task_week=#{taskWeek} and school_year=#{schoolYear} and is_deleted = 0 and user_id in
+        <foreach collection="allGeneralUserId" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <select id="showTaskDetails" resultMap="TaskResult">
+        select * from task where task_id = #{taskId}
+    </select>
+
+    <update id="updateTask">
+        update task
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null ">user_id = #{userId},</if>
+            <if test="taskName != null and taskName != ''">task_name = #{taskName},</if>
+            <if test="expResult != null and expResult != ''">exp_result = #{expResult},</if>
+            <if test="taskComment != null and taskComment != ''">task_comment = #{taskComment},</if>
+            <if test="taskStatus != null ">task_status = #{taskStatus},</if>
+            <if test="taskLevel != null ">task_level = #{taskLevel},</if>
+            <if test="taskDate != null and taskDate != ''">task_date = #{taskDate},</if>
+            <if test="dayOfWeek != null and dayOfWeek != ''">dayofweek = #{dayOfWeek},</if>
+<!--            <if test="taskWeek != null and taskWeek != ''">task_week = #{taskWeek},</if>-->
+        </trim>
+        where task_id = #{taskId}
+    </update>
+
+    <update id="deleteTask" parameterType="Long">
+        update task set is_deleted = 1 where task_id = #{taskId}
+    </update>
+    
+    <insert id="AddTask" >
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">user_id,</if>
+            <if test="taskName != null  and taskName != ''">task_name,</if>
+            <if test="expResult != null  and expResult != ''">exp_result,</if>
+            <if test="taskComment != null  and taskComment != ''">task_comment,</if>
+            <if test="taskStatus != null  ">task_status,</if>
+            <if test="taskLevel != null  ">task_level,</if>
+            <if test="taskDate != null  and taskDate != ''">task_date,</if>
+            <if test="dayOfWeek != null  and dayOfWeek != ''">dayofweek,</if>
+            <if test="taskWeek != null  ">task_week,</if>
+            <if test="schoolYear != null  and schoolYear != ''">school_year,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">#{userId},</if>
+            <if test="taskName != null  and taskName != ''">#{taskName},</if>
+            <if test="expResult != null  and expResult != ''">#{expResult},</if>
+            <if test="taskComment != null  and taskComment != ''">#{taskComment},</if>
+            <if test="taskStatus != null  ">#{taskStatus},</if>
+            <if test="taskLevel != null  ">#{taskLevel},</if>
+            <if test="taskDate != null  and taskDate != ''">#{taskDate},</if>
+            <if test="dayOfWeek != null  and dayOfWeek != ''">#{dayOfWeek},</if>
+            <if test="taskWeek != null  ">#{taskWeek},</if>
+            <if test="schoolYear != null  and schoolYear != ''">#{schoolYear},</if>
+        </trim>
+    </insert>
+
+    <insert id="releaseTask">
+        insert into task
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">user_id,</if>
+            <if test="taskName != null  and taskName != ''">task_name,</if>
+            <if test="expResult != null  and expResult != ''">exp_result,</if>
+            <if test="taskComment != null  and taskComment != ''">task_comment,</if>
+            <if test="taskStatus != null  ">task_status,</if>
+            <if test="taskLevel != null  ">task_level,</if>
+            <if test="taskDate != null  and taskDate != ''">task_date,</if>
+            <if test="dayOfWeek != null  and dayOfWeek != ''">dayofweek,</if>
+            <if test="taskWeek != null  ">task_week,</if>
+            <if test="schoolYear != null  and schoolYear != ''">school_year,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">#{userId},</if>
+            <if test="taskName != null  and taskName != ''">#{taskName},</if>
+            <if test="expResult != null  and expResult != ''">#{expResult},</if>
+            <if test="taskComment != null  and taskComment != ''">#{taskComment},</if>
+            <if test="taskStatus != null  ">#{taskStatus},</if>
+            <if test="taskLevel != null  ">#{taskLevel},</if>
+            <if test="taskDate != null  and taskDate != ''">#{taskDate},</if>
+            <if test="dayOfWeek != null  and dayOfWeek != ''">#{dayOfWeek},</if>
+            <if test="taskWeek != null  ">#{taskWeek},</if>
+            <if test="schoolYear != null  and schoolYear != ''">#{schoolYear},</if>
+        </trim>
+    </insert>
+
+    <select id="finishTaskCount" resultType="Long">
+        select count(task_id) from task
+        where task_status=1 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+
+    <select id="allTaskCount" resultType="Long">
+        select count(*) from task where is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+
+    <resultMap id="TaskLevelList" type="com.weekly.user.pojo.vo.TaskLevelListVo">
+        <id property="taskId" column="task_id"/>
+        <result property="taskLevel" column="task_level"/>
+    </resultMap>
+
+    <select id="getFinishTaskLevelList" resultMap="TaskLevelList">
+        select task_id,task_level from task
+        where task_status=1 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+</mapper>

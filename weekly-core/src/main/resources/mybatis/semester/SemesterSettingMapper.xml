@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weekly.semester.mapper.SemesterSettingMapper">
+
+    <resultMap id="SemesterSetting" type="com.weekly.semester.pojo.vo.SemesterSettingVo">
+        <id property="semesterId" column="semester_id"/>
+        <result property="schoolYearAndSemester" column="schoolyear_semester"/>
+        <result property="startDate" column="start_date"/>
+        <result property="semesterWeeks" column="semester_weeks"/>
+    </resultMap>
+
+    <select id="showSemesterSetting" resultMap="SemesterSetting">
+        select * from semester_setting
+    </select>
+
+    <insert id="addSemesterSetting">
+        insert into semester_setting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="schoolYearAndSemester != null  and schoolYearAndSemester != ''">schoolyear_semester,</if>
+            <if test="startDate != null ">start_date,</if>
+            <if test="semesterWeeks != null  ">semester_weeks,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="schoolYearAndSemester != null  and schoolYearAndSemester != ''">#{schoolYearAndSemester},</if>
+            <if test="startDate != null ">#{startDate},</if>
+            <if test="semesterWeeks != null  ">#{semesterWeeks},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteSemesterSetting">
+        delete from semester_setting where semester_id = #{semesterId}
+    </delete>
+
+    <resultMap id="SemesterVoResult" type="com.weekly.semester.pojo.vo.SemesterVo">
+        <id property="semesterId" column="semester_id"/>
+        <result property="schoolYear" column="schoolyear_semester"/>
+    </resultMap>
+
+    <select id="getAllSchoolYearInSetting" resultMap="SemesterVoResult">
+        select semester_id,schoolyear_semester from semester_setting
+    </select>
+
+    <select id="getAllSchoolYear" resultType="String">
+        select schoolyear_semester from semester_setting
+    </select>
+
+    <select id="getSemesterWeeks" resultType="INTEGER">
+        select semester_weeks from semester_setting where schoolyear_semester =#{schoolYear}
+    </select>
+
+    <select id="getSemesterByCurrentDate" resultType="String">
+        select schoolyear_semester from semester_setting
+        where start_date <![CDATA[ <= ]]> #{now} order by start_date desc limit 1
+    </select>
+
+    <select id="getStartDateBySchoolYear" resultType="String">
+        select start_date from semester_setting where schoolyear_semester =#{schoolYear}
+    </select>
+
+    <update id="updateSemesterSetting">
+        update semester_setting
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="schoolYearAndSemester != null  and schoolYearAndSemester != ''">schoolyear_semester = #{schoolYearAndSemester},</if>
+            <if test="startDate != null">start_date = #{startDate},</if>
+            <if test="semesterWeeks != null  ">semester_weeks = #{semesterWeeks},</if>
+        </trim>
+        where semester_id = #{semesterId}
+    </update>
+</mapper>
+

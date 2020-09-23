@@ -3,14 +3,19 @@ package com.weekly.business.impl;
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.weekly.business.LoginBusiness;
+import com.weekly.common.event.RegisterBO;
 import com.weekly.common.exception.TokenException;
 import com.weekly.common.exception.WechatException;
-import com.weekly.common.pojo.po.User;
+import com.weekly.user.pojo.po.User;
 import com.weekly.common.pojo.vo.WechatLoginParamsVo;
 import com.weekly.configuration.WxMpCustomerConfig;
 import com.weekly.service.UserService;
+import com.weekly.user.pojo.vo.AddSysUserMQVo;
+import com.weekly.util.PassWordUtils;
 import me.chanjar.weixin.common.error.WxErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
@@ -25,6 +30,8 @@ public class LoginBusinessImpl implements LoginBusiness {
 //    @Autowired
 //    private AdministratorService administratorService;
 
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Autowired
     private WxMpCustomerConfig wxMpCustomerConfig;
@@ -37,28 +44,40 @@ public class LoginBusinessImpl implements LoginBusiness {
         User user = userService.getByOpenId(result.getOpenid());
 
         if (null == user) {
-            user = register(result);
+            user = register(result,paramsVo.getUsername());
         }
-
 ////        更新accessKey
 //        userService.updateAccessKey(user, result);
-
         return user;
     }
 
 
     @Override
-    public User register(WxMaJscode2SessionResult result) {
+    public User register(WxMaJscode2SessionResult result,String username) {
 
         User user = new User();
 
-        user.setUsername(getRandomString(7));
-
-        user.setUnionId(result.getUnionid());
+        String nickname = getRandomString(7);
+        user.setUsername(username);
+        user.setNickname(nickname);
+        user.setPassword(PassWordUtils.encryptPassword("123456"));
+//        user.setUnionId(result.getUnionid());
         user.setOpenId(result.getOpenid());
+        String uuid = UUID.randomUUID().toString();
+        user.setUuid(uuid);
+//        userService.add(user);
 
-        user = userService.add(user);
-
+        RegisterBO registerBO = new RegisterBO();
+        registerBO.setUsername(username);
+        registerBO.setNickname(nickname);
+        registerBO.setPassword(PassWordUtils.encryptPassword("123456"));
+        registerBO.setOpenId(result.getOpenid());
+        registerBO.setUuid(uuid);
+        Long[] roles = {2L};  //指定赋予用户普通角色2的权限
+//        registerBO.setUserId(user.getId());
+        registerBO.setRoles(roles);
+        System.out.println(registerBO);
+        redisTemplate.convertAndSend("register",registerBO);
         return user;
     }
 
@@ -123,6 +142,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         return result;
     }
 
+
     public String getRandomString(int length){
         String str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         Random random=new Random();
@@ -133,5 +153,6 @@ public class LoginBusinessImpl implements LoginBusiness {
         }
         return sb.toString();
     }
+
 
 }

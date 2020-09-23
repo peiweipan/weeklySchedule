@@ -3,43 +3,103 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.weekly.mapper.UserMapper">
     
-    <resultMap id="UserResult" type="com.weekly.common.pojo.po.User">
-        <id property="id" column="id"/>
+    <resultMap id="UserResult" type="com.weekly.user.pojo.po.User">
+        <id property="id" column="user_id"/>
         <result property="uuid" column="uuid"/>
         <result property="openId" column="openid"/>
-        <result property="unionId" column="unionid"/>
-        <result property="accessKey" column="accesskey"/>
-        <result property="username" column="username"/>
+<!--        <result property="unionId" column="unionid"/>-->
+<!--        <result property="accessKey" column="accesskey"/>-->
+        <result property="username" column="user_name"/>
+        <result property="nickname" column="nick_name"/>
         <result property="password" column="password"/>
-        <result property="wechatNickname" column="wechatNickname"/>
-        <result property="avatarUrl" column="avatarUrl"/>
+<!--        <result property="wechatNickname" column="wechatNickname"/>-->
+<!--        <result property="avatarUrl" column="avatarUrl"/>-->
+<!--        <result property="isdeleted" column="is_deleted"/>-->
+        <result property="isAdmin" column="is_admin"/>
     </resultMap>
 
-    <select id="getByOpenId" resultMap="UserResult">
-        select * from user where openid=#{openId}
+    <select id="getByOpenId" parameterType="String" resultMap="UserResult">
+        select * from sys_user where openid=#{openId}
     </select>
-    
-    <insert id="add" useGeneratedKeys="true" keyProperty="id">
-        insert into user
+
+    <select id="getUserById" parameterType="Long" resultMap="UserResult">
+        select * from sys_user where user_id =#{id}
+    </select>
+
+    <select id="getUserByIds" resultMap="UserResult">
+        select * from sys_user where user_id in
+        <foreach collection="list" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <select id="getUserIdbyName" parameterType="String" resultType="Long">
+        select user_id from sys_user where nick_name = #{nickname}
+    </select>
+
+
+    <insert id="add" parameterType="com.weekly.user.pojo.po.User" useGeneratedKeys="true" keyProperty="id">
+        insert into sys_user
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="uuid != null and uuid != ''">uuid,</if>
             <if test="openId != null and openId != ''">openid,</if>
-            <if test="unionId != null and unionId != ''">uuid,</if>
+<!--            <if test="unionId != null and unionId != ''">uuid,</if>-->
+            <if test="password != null and password != ''">password,</if>
 <!--            <if test="accessKey != null and accessKey != ''">accesskey,</if>-->
-            <if test="username != null and username != ''">username,</if>
+            <if test="username != null and username != ''">user_name,</if>
+            <if test="nickname != null and nickname != ''">nick_name,</if>
 <!--            <if test="password != null and password != ''">password,</if>-->
 <!--            <if test="wechatNickname != null and wechatNickname != ''">wechatNickname,</if>-->
 <!--            <if test="avatarUrl != null and avatarUrl != ''">avatarUrl,</if>-->
+            create_time,
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="uuid != null and uuid != ''">#{uuid},</if>
             <if test="openId != null and openId != ''">#{openId},</if>
-            <if test="unionId != null and unionId != ''">#{unionId},</if>
+<!--            <if test="unionId != null and unionId != ''">#{unionId},</if>-->
+            <if test="password != null and password != ''">#{password},</if>
 <!--            <if test="accessKey != null and accessKey != ''">#{accessKey},</if>-->
             <if test="username != null and username != ''">#{username},</if>
+            <if test="nickname != null and nickname != ''">#{nickname},</if>
 <!--            <if test="password != null and password != ''">#{password},</if>-->
 <!--            <if test="wechatNickname != null and wechatNickname != ''">#{wechatNickname},</if>-->
 <!--            <if test="avatarUrl != null and avatarUrl != ''">#{avatarUrl},</if>-->
+            sysdate(),
         </trim>
     </insert>
+
+    <select id="findUserNickname" resultType="String">
+        select nick_name from sys_user where user_id=#{id}
+    </select>
+
+    <select id="getAllUserNickname" resultType="String">
+        select nick_name from sys_user
+    </select>
+
+    <update id="changeUserNickname">
+        update sys_user set nick_name = #{nickname} where user_id= #{id}
+    </update>
+
+    <update id="changePassWord">
+        update sys_user set password = #{password} where user_id = #{id}
+    </update>
+
+    <resultMap id="UserListResult" type="com.weekly.user.pojo.vo.UserListVo1">
+        <id property="userId" column="user_id"/>
+        <result property="nickname" column="nick_name"/>
+    </resultMap>
+
+    <select id="showOrdinaryUserList" resultMap="UserListResult">
+        select user_id,nick_name from sys_user where is_admin = 0
+    </select>
+
+    <select id="showAllUserList" resultMap="UserListResult">
+        select user_id,nick_name from sys_user
+    </select>
+
+    <select id="getAllGeneralUserId" resultType="Long">
+        select user_id from sys_user where is_admin = 0
+    </select>
+
+
 </mapper>

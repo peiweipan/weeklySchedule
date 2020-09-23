@@ -2,7 +2,7 @@ package com.weekly.business;
 
 import cn.binarywang.wx.miniapp.bean.WxMaJscode2SessionResult;
 import com.weekly.common.exception.TokenException;
-import com.weekly.common.pojo.po.User;
+import com.weekly.user.pojo.po.User;
 import com.weekly.common.pojo.vo.WechatLoginParamsVo;
 
 public interface LoginBusiness {
@@ -25,7 +25,7 @@ public interface LoginBusiness {
      * @param result 微信参数
      * @return
      */
-    User register(WxMaJscode2SessionResult result) throws TokenException;
+    User register(WxMaJscode2SessionResult result,String username) throws TokenException;
 
 //    /**
 //     * 注册
@@ -35,5 +35,6 @@ public interface LoginBusiness {
 //    Administrator register(AdminLoginParamsVo paramsVo) throws TokenException;
 
     WxMaJscode2SessionResult findWxResult(WechatLoginParamsVo paramsVo);
+
 
 }

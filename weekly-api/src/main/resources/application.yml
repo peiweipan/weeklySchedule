@@ -1,5 +1,5 @@
 # 项目相关配置
-ruoyi:
+weekly:
   # 名称
   name: RuoYi
   # 版本
@@ -49,6 +49,10 @@ spring:
        max-file-size:  10MB
        # 设置总上传的文件大小
        max-request-size:  20MB
+  jackson:
+    time-zone: GMT+8
+    serialization:
+      write-dates-as-timestamps: true
   # 服务模块
   devtools:
     restart:
@@ -95,6 +99,8 @@ mybatis:
 mybatis-plus:
   mapper-locations: classpath*:mybatis/**/*Mapper.xml
   type-aliases-package: com.weekly.**.domain
+  configuration:
+    default-enum-type-handler: org.apache.ibatis.type.EnumOrdinalTypeHandler
 
 # PageHelper分页插件
 pagehelper: 

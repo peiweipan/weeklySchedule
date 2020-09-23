@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.weekly.mapper.SummaryMapper">
+
+    <resultMap id="SummaryResult" type="com.weekly.user.pojo.vo.WeeklySummaryVo">
+        <id property="SummaryId" column="Summary_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="finishQuality" column="finishQuality"/>
+        <result property="jobCount" column="jobCount"/>
+        <result property="jobDescription" column="jobDescription"/>
+        <result property="offDays" column="offDays"/>
+        <result property="overtimeDays" column="overtimeDays"/>
+        <result property="jobLevel" column="jobLevel"/>
+        <result property="workPerformance" column="workPerformance"/>
+        <result property="taskWeek" column="task_week"/>
+        <result property="workDays" column="workDays"/>
+    </resultMap>
+
+    <select id="viewWeeklySummary" resultMap="SummaryResult">
+        select * from weekly_summary where user_id = #{userId} and task_week =#{taskWeek} and school_year = #{schoolYear}
+    </select>
+    
+    <update id="autoUpdateWeeklySummary">
+        update weekly_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="finishQuality != null ">finishQuality = #{finishQuality},</if>
+            <if test="jobCount != null ">jobCount = #{jobCount},</if>
+            <if test="offDays != null ">offDays = #{offDays},</if>
+            <if test="overtimeDays != null ">overtimeDays = #{overtimeDays},</if>
+            <if test="jobDescription != null and jobDescription != ''">jobDescription = #{jobDescription},</if>
+            <if test="jobLevel != null ">jobLevel = #{jobLevel},</if>
+            <if test="workPerformance != null ">workPerformance = #{workPerformance},</if>
+        </trim>
+        where user_id = #{userId} and task_week =#{taskWeek} and school_year = #{schoolYear}
+    </update>
+
+    <insert id="createEmptySummary">
+        insert into weekly_summary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">user_id,</if>
+            <if test="taskWeek != null  ">task_week,</if>
+            <if test="schoolYear != null  and schoolYear != ''">school_year,</if>
+            <if test="workDays != null  ">workDays,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null  ">#{userId},</if>
+            <if test="taskWeek != null  ">#{taskWeek},</if>
+            <if test="schoolYear != null  and schoolYear != ''">#{schoolYear},</if>
+            <if test="workDays != null  ">#{workDays},</if>
+        </trim>
+    </insert>
+
+    <update id="updateWeeklySummaryByUser">
+        update weekly_summary
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="offDays != null ">offDays = #{offDays},</if>
+            <if test="overtimeDays != null ">overtimeDays = #{overtimeDays},</if>
+            <if test="jobDescription != null and jobDescription != ''">jobDescription = #{jobDescription},</if>
+        </trim>
+        where user_id = #{userId} and task_week =#{taskWeek} and  school_year = #{schoolYear}
+    </update>
+
+    <select id="viewAllWeeklySummary" resultMap="SummaryResult">
+        select * from weekly_summary where task_week =#{taskWeek} and school_year = #{schoolYear}
+    </select>
+
+    <select id="viewAllGeneralUserWeeklySummary" resultMap="SummaryResult">
+        select * from weekly_summary where task_week =#{taskWeek} and school_year = #{schoolYear} and user_id in
+        <foreach collection="allGeneralUserId" item="userId" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </select>
+
+    <resultMap id="YearPerformance" type="com.weekly.user.pojo.vo.HalfPerformanceVo">
+        <result property="HalfYearOffDays" column="offDayCount"/>
+        <result property="HalfYearOvertimeDays" column="overtimeDaysCount"/>
+        <result property="HalfYearPerformance" column="performanceCount"/>
+    </resultMap>
+
+    <select id="sumPerformanceByYear" resultMap="YearPerformance">
+        select sum(offDays) offDayCount ,sum(overtimeDays) overtimeDaysCount,sum(workPerformance) performanceCount
+        from weekly_summary where user_id = #{userId} and school_year = #{schoolYear}
+    </select>
+
+</mapper>
