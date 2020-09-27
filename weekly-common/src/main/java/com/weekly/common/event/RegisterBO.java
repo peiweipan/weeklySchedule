@@ -11,7 +11,7 @@ public class RegisterBO {
 
     private Long userId;
 
-    private String uuid;
+//    private String uuid;
 
     private String openId;
 

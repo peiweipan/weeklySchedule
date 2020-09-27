@@ -39,7 +39,7 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户名称")
     private String nickName;
 
-    private String uuid;
+//    private String uuid;
 
     private String openId;
 
@@ -325,18 +325,18 @@ public class SysUser extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .append("dept", getDept())
-            .append("uuid",getUuid())
+//            .append("uuid",getUuid())
             .append("openId",getOpenId())
             .toString();
     }
 
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(String uuid) {
-        this.uuid = uuid;
-    }
+//    public String getUuid() {
+//        return uuid;
+//    }
+//
+//    public void setUuid(String uuid) {
+//        this.uuid = uuid;
+//    }
 
     public String getOpenId() {
         return openId;

@@ -25,7 +25,7 @@ public class SysUserAddByMQServiceImpl {
         sysUser.setUserName(user.getUsername());
         sysUser.setNickName(user.getNickname());
         sysUser.setPassword(user.getPassword());
-        sysUser.setUuid(user.getUuid());
+//        sysUser.setUuid(user.getUuid());
         sysUser.setOpenId(user.getOpenId());
         sysUser.setRoleIds(user.getRoles());
         System.out.println(sysUser);

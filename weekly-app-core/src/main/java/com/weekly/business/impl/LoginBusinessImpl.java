@@ -63,8 +63,8 @@ public class LoginBusinessImpl implements LoginBusiness {
         user.setPassword(PassWordUtils.encryptPassword("123456"));
 //        user.setUnionId(result.getUnionid());
         user.setOpenId(result.getOpenid());
-        String uuid = UUID.randomUUID().toString();
-        user.setUuid(uuid);
+//        String uuid = UUID.randomUUID().toString();
+//        user.setUuid(uuid);
 //        userService.add(user);
 
         RegisterBO registerBO = new RegisterBO();
@@ -72,7 +72,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         registerBO.setNickname(nickname);
         registerBO.setPassword(PassWordUtils.encryptPassword("123456"));
         registerBO.setOpenId(result.getOpenid());
-        registerBO.setUuid(uuid);
+//        registerBO.setUuid(uuid);
         Long[] roles = {2L};  //指定赋予用户普通角色2的权限
 //        registerBO.setUserId(user.getId());
         registerBO.setRoles(roles);

@@ -176,7 +176,7 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public void updateTask(TaskUpdateVo taskUpdateVo) {
-        System.out.println(taskUpdateVo);
+//        System.out.println(taskUpdateVo);
         LoginUser loginUser = tokenService.getLoginUser(ServletUtils.getRequest());
         Long userId = loginUser.getUser().getUserId();
         Long userIdbyName = userMapper.getUserIdbyName(taskUpdateVo.getNickname());

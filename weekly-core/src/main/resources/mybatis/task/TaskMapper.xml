@@ -79,7 +79,7 @@
 
     <select id="finishTaskCount" resultType="Long">
         select count(task_id) from task
-        where task_status=1 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+        where task_status=0 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
     </select>
 
     <select id="allTaskCount" resultType="Long">
@@ -93,7 +93,7 @@
 
     <select id="getFinishTaskLevelList" resultMap="TaskLevelList">
         select task_id,task_level from task
-        where task_status=1 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+        where task_status=0 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
     </select>
 
     <resultMap id="TaskSortByDay" type="com.weekly.task.pojo.vo.TaskSortByDayVo">

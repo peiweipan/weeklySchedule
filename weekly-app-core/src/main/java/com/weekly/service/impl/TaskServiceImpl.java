@@ -138,6 +138,7 @@ public class TaskServiceImpl implements TaskService {
         }
         Long userIdbyName = userMapper.getUserIdbyName(taskReleaseVo.getNickname());
         taskReleaseVo.setUserId(userIdbyName);
+        System.out.println(taskReleaseVo);
         if(1 == user.getIsAdmin()){
             taskMapper.releaseTask(taskReleaseVo);
             summaryService.autoUpdateWeeklySummary(userIdbyName,taskReleaseVo.getTaskWeek(),taskReleaseVo.getSchoolYear());

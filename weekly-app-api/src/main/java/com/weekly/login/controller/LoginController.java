@@ -12,9 +12,11 @@ import com.weekly.common.pojo.vo.WechatLoginParamsVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 @RestController
 @RequestMapping("/login")
@@ -35,7 +37,8 @@ public class LoginController {
     public LoginVo login(@RequestBody WechatLoginParamsVo paramsVo) throws TokenException {
         User user = loginBusiness.login(paramsVo);
 
-        UserBo userBo = doLogin(user.getId(), user.getUuid());
+//        UserBo userBo = doLogin(user.getId(), user.getUuid());
+        UserBo userBo = doLogin(user.getId(), user.getOpenId());
 
         return new LoginVo(userBo.getToken(), user.getUsername());
     }
