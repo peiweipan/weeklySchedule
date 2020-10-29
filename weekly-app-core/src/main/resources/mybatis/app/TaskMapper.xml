@@ -130,4 +130,9 @@
         select task_id,task_level from task
         where task_status=0 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
     </select>
+
+    <select id="getTaskLevelList" resultMap="TaskLevelList">
+        select task_id,task_level from task
+        where is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+    </select>
 </mapper>

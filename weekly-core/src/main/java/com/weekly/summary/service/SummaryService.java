@@ -15,7 +15,9 @@ public interface SummaryService {
 
     WeeklySummaryVo getWeeklySummary(Long userId, int taskWeek, String schoolYear);
 
-    WeeklySummaryVo computeSummaryParam(Long userId,int taskWeek,String schoolYear);
+//    WeeklySummaryVo computeSummaryParam(Long userId,int taskWeek,String schoolYear);
+
+    WeeklySummaryVo computeSummaryParam(Long userId,Integer taskWeek,String schoolYear,WeeklySummaryVo weeklySummary);
 
     ALLYearPerformanceVo showWeeklyPerformance(Integer year);
 

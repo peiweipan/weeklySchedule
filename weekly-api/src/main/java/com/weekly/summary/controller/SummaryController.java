@@ -134,7 +134,7 @@ public class SummaryController {
             voMap.put("姓名", userName);
             for (int i = startWeek; i <= endWeek; i++) {
                 FinishQualityVo weekVo = taskWeekMap.get(i);
-                voMap.put(String.format("第%d周", i), weekVo == null ? 0 : weekVo.getFinishQuality());
+                voMap.put(String.format("第%d周", i), weekVo == null ? 0 : (double)weekVo.getFinishQuality()/100);
             }
             excelList.add(voMap);
         }
@@ -184,7 +184,7 @@ public class SummaryController {
             voMap.put("姓名", userName);
             for (int i = startWeek; i <= endWeek; i++) {
                 WeeklyPerformanceVo weekVo = taskWeekMap.get(i);
-                voMap.put(String.format("第%d周", i), weekVo == null ? 0 : weekVo.getWorkPerformance());
+                voMap.put(String.format("第%d周", i), weekVo == null ? 0 : (double)weekVo.getWorkPerformance()/100);
             }
             excelList.add(voMap);
         }

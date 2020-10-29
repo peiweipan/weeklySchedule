@@ -26,6 +26,8 @@ public interface TaskMapper {
 
     List<TaskLevelListVo> getFinishTaskLevelList(Long userId,Integer taskWeek,String schoolYear);
 
+    List<TaskLevelListVo> getTaskLevelList(Long userId,Integer taskWeek,String schoolYear);
+
     List<TaskListVo> showAllUserTask(Integer taskWeek,String schoolYear);
 
     List<TaskListVo> showAllGeneralUserTask(Integer taskWeek,List<Long> allGeneralUserId,String schoolYear);

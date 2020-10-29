@@ -173,8 +173,8 @@ public class SummaryServiceImpl implements SummaryService {
     @Async
     @Transactional(rollbackFor = Exception.class)
     public void autoUpdateWeeklySummary(Long userId, Integer taskWeek,String schoolYear) {
-        getWeeklySummary(userId,taskWeek,schoolYear);
-        WeeklySummaryVo weeklySummaryVo = computeSummaryParam(userId,taskWeek,schoolYear);
+        WeeklySummaryVo weeklySummary = getWeeklySummary(userId, taskWeek, schoolYear);
+        WeeklySummaryVo weeklySummaryVo = computeSummaryParam(userId,taskWeek,schoolYear,weeklySummary);
         weeklySummaryVo.setSchoolYear(schoolYear);
         summaryMapper.autoUpdateWeeklySummary(weeklySummaryVo);
     }
@@ -211,19 +211,21 @@ public class SummaryServiceImpl implements SummaryService {
                 workdays = 5;
             }
             summaryMapper.createEmptySummary(userId,taskWeek,schoolYear,workdays);
+            WeeklySummaryVo weeklySummary2 = summaryMapper.viewWeeklySummary(userId, taskWeek, schoolYear);
+            return weeklySummary2;
         }
         return weeklySummary;
     }
 
     @Override
-    public WeeklySummaryVo computeSummaryParam(Long userId, Integer taskWeek,String schoolYear) {
+    public WeeklySummaryVo computeSummaryParam(Long userId, Integer taskWeek,String schoolYear,WeeklySummaryVo weeklySummaryVo) {
         Long finishCount = taskMapper.finishTaskCount(userId, taskWeek,schoolYear);
 //        System.out.println(finishCount);
 
         Long allCount = taskMapper.allTaskCount(userId, taskWeek,schoolYear);
 //        System.out.println(allCount);
 
-        WeeklySummaryVo weeklySummaryVo =new WeeklySummaryVo();
+//        WeeklySummaryVo weeklySummaryVo =new WeeklySummaryVo();
         weeklySummaryVo.setTaskWeek(taskWeek);
         weeklySummaryVo.setUserId(userId);
         double finishQuality = (double)finishCount/(double)allCount;
@@ -233,8 +235,8 @@ public class SummaryServiceImpl implements SummaryService {
         double jobCount = (double)allCount/5;
 //        System.out.println(jobCount);
         weeklySummaryVo.setJobCount((int)(jobCount*100));
-
-        List<TaskLevelListVo> finishTaskLevelList = taskMapper.getFinishTaskLevelList(userId, taskWeek,schoolYear);
+                                                              //getFinishTaskLevelList -> getTaskLevelList
+        List<TaskLevelListVo> finishTaskLevelList = taskMapper.getTaskLevelList(userId, taskWeek,schoolYear);
         Map<Long, Long> collect = finishTaskLevelList.stream().collect(
                 Collectors.groupingBy(TaskLevelListVo::getTaskLevel, Collectors.counting()));
 //        System.out.println(collect);

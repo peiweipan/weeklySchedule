@@ -96,6 +96,11 @@
         where task_status=0 and is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
     </select>
 
+    <select id="getTaskLevelList" resultMap="TaskLevelList">
+        select task_id,task_level from task
+        where is_deleted = 0 and task_week = #{taskWeek} and user_id= #{userId} and school_year = #{schoolYear}
+    </select>
+
     <resultMap id="TaskSortByDay" type="com.weekly.task.pojo.vo.TaskSortByDayVo">
         <id property="taskId" column="task_id"/>
         <result property="taskName" column="task_name"/>
@@ -104,7 +109,7 @@
 
     <select id="viewTaskByMonth" resultMap="TaskSortByDay">
         SELECT task_id,task_name,SUBSTR(task_date,9,2) as day from task
-        where task_date like CONCAT(#{month},'%') and user_id = #{userId}
+        where task_date like CONCAT(#{month},'%') and user_id = #{userId} and is_deleted = 0
     </select>
 
     <resultMap type="com.weekly.task.pojo.po.Task" id="ExportTaskResult">

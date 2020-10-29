@@ -35,7 +35,13 @@ public class AddressUtils
                 return address;
             }
             JSONObject obj = JSONObject.parseObject(rspStr);
+            if (obj == null) {
+                return address;
+            }
             JSONObject data = obj.getObject("data", JSONObject.class);
+            if (data == null) {
+                return address;
+            }
             String region = data.getString("region");
             String city = data.getString("city");
             address = region + " " + city;

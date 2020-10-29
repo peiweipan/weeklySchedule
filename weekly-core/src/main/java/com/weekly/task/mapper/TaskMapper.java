@@ -23,6 +23,8 @@ public interface TaskMapper {
 
     List<TaskLevelListVo> getFinishTaskLevelList(Long userId, int taskWeek, String schoolYear);
 
+    List<TaskLevelListVo> getTaskLevelList(Long userId, int taskWeek, String schoolYear);
+
     List<TaskSortByDayVo> viewTaskByMonth(String month,Long userId);
 
     List<Task> selectTaskList(String schoolYear,Integer taskWeek,Long userId);
