@@ -80,6 +80,15 @@ public class SummaryController {
     @ApiOperation("导出学年综合信息")
     public AjaxResult export(Long year) {
         AllYearInfoVo allYearInfoVo = summaryService.viewAllYearSummaryInfo(year);
+        allYearInfoVo.setFirstHalfYearOffDays(allYearInfoVo.getFirstHalfYearOffDays()/100);
+        allYearInfoVo.setFirstHalfYearOvertimeDays(allYearInfoVo.getFirstHalfYearOvertimeDays()/100);
+        allYearInfoVo.setFirstHalfYearPerformance(allYearInfoVo.getFirstHalfYearPerformance()/100);
+        allYearInfoVo.setSecondHalfYearOffDays(allYearInfoVo.getSecondHalfYearOffDays()/100);
+        allYearInfoVo.setSecondHalfYearOvertimeDays(allYearInfoVo.getSecondHalfYearOvertimeDays()/100);
+        allYearInfoVo.setSecondHalfYearPerformance(allYearInfoVo.getSecondHalfYearPerformance()/100);
+        allYearInfoVo.setTotalOffDays(allYearInfoVo.getTotalOffDays()/100);
+        allYearInfoVo.setTotalOvertimeDays(allYearInfoVo.getTotalOvertimeDays()/100);
+        allYearInfoVo.setTotalPerformance(allYearInfoVo.getTotalPerformance()/100);
         ArrayList<AllYearInfoVo> list = new ArrayList<>(1);
         list.add(allYearInfoVo);
         ExcelUtil<AllYearInfoVo> util = new ExcelUtil<AllYearInfoVo>(AllYearInfoVo.class);

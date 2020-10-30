@@ -9,37 +9,37 @@ public class AllYearInfoVo {
 
     @Excel(name = "上半年请假天数")
     @ApiModelProperty("上半年请假天数")
-    private int firstHalfYearOffDays;
+    private double firstHalfYearOffDays;
 
     @Excel(name = "上半年加班天数")
     @ApiModelProperty("上半年加班天数")
-    private int firstHalfYearOvertimeDays;
+    private double firstHalfYearOvertimeDays;
 
     @Excel(name = "上半年绩效")
     @ApiModelProperty("上半年绩效")
-    private int firstHalfYearPerformance;
+    private double firstHalfYearPerformance;
 
     @Excel(name = "下半年请假天数")
     @ApiModelProperty("下半年请假天数")
-    private int SecondHalfYearOffDays;
+    private double SecondHalfYearOffDays;
 
     @Excel(name = "下半年加班天数")
     @ApiModelProperty("下半年加班天数")
-    private int SecondHalfYearOvertimeDays;
+    private double SecondHalfYearOvertimeDays;
 
     @Excel(name = "下半年绩效")
     @ApiModelProperty("下半年绩效")
-    private int SecondHalfYearPerformance;
+    private double SecondHalfYearPerformance;
 
     @Excel(name = "全年请假天数")
     @ApiModelProperty("全年请假天数")
-    private int totalOffDays;
+    private double totalOffDays;
 
     @Excel(name = "全年加班天数")
     @ApiModelProperty("全年加班天数")
-    private int totalOvertimeDays;
+    private double totalOvertimeDays;
 
     @Excel(name = "全年绩效")
     @ApiModelProperty("全年绩效")
-    private int totalPerformance;
+    private double totalPerformance;
 }

@@ -4,16 +4,20 @@ import com.weekly.common.utils.poi.ExcelUtil;
 import com.weekly.framework.aspectj.lang.annotation.Log;
 import com.weekly.framework.aspectj.lang.enums.BusinessType;
 import com.weekly.framework.web.domain.AjaxResult;
+import com.weekly.task.enums.TaskLevelTypeEnums;
+import com.weekly.task.enums.TaskStatusTypeEnums;
 import com.weekly.task.pojo.po.Task;
 import com.weekly.task.pojo.vo.*;
 import com.weekly.task.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -48,9 +52,39 @@ public class TaskController {
     public AjaxResult export(String schoolYear,Integer taskWeek,String nickname) throws ParseException {
 //        return taskService.exportTask(schoolYear,taskWeek,nickname);
         List<TaskListVo> taskListVos = taskService.showUserTask(taskWeek, nickname, schoolYear);
-        System.out.println(taskListVos);
-        ExcelUtil<TaskListVo> util = new ExcelUtil<TaskListVo>(TaskListVo.class);
-        return util.exportExcel(taskListVos, "task");
+        //下面将英文枚举转化为中文再打印
+        List<TaskExcelVo> taskExcelVos = new ArrayList<>();
+        for (int i = 0; i < taskListVos.size(); i++) {
+            TaskListVo taskListVo = taskListVos.get(i);
+            TaskExcelVo taskExcelVo = new TaskExcelVo();
+            BeanUtils.copyProperties(taskListVo,taskExcelVo);
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.DONE)){
+                taskExcelVo.setTaskStatus("已完成");
+            }
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.UNDONE)){
+                taskExcelVo.setTaskStatus("未完成");
+            }
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.DELAY)){
+                taskExcelVo.setTaskStatus("延期");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.SCHOOL)){
+                taskExcelVo.setTaskLevel("校");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.CITY)){
+                taskExcelVo.setTaskLevel("市");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.PROVINCE)){
+                taskExcelVo.setTaskLevel("省");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.COUNTRY)){
+                taskExcelVo.setTaskLevel("国");
+            }
+            taskExcelVos.add(taskExcelVo);
+        }
+//        ExcelUtil<TaskListVo> util = new ExcelUtil<TaskListVo>(TaskListVo.class);
+//        return util.exportExcel(taskListVos, "task");
+        ExcelUtil<TaskExcelVo> util = new ExcelUtil<TaskExcelVo>(TaskExcelVo.class);
+        return util.exportExcel(taskExcelVos, "task");
     }
 
 
@@ -61,8 +95,39 @@ public class TaskController {
     public AjaxResult export1(Integer taskWeek)
     {
         List<TaskListVo> taskListVos = taskService.showCurrentUserTask(taskWeek);
-        ExcelUtil<TaskListVo> util = new ExcelUtil<TaskListVo>(TaskListVo.class);
-        return util.exportExcel(taskListVos, "task");
+        //下面将英文枚举转化为中文再打印
+        List<TaskExcelVo> taskExcelVos = new ArrayList<>();
+        for (int i = 0; i < taskListVos.size(); i++) {
+            TaskListVo taskListVo = taskListVos.get(i);
+            TaskExcelVo taskExcelVo = new TaskExcelVo();
+            BeanUtils.copyProperties(taskListVo,taskExcelVo);
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.DONE)){
+                taskExcelVo.setTaskStatus("已完成");
+            }
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.UNDONE)){
+                taskExcelVo.setTaskStatus("未完成");
+            }
+            if(taskListVo.getTaskStatus().equals(TaskStatusTypeEnums.DELAY)){
+                taskExcelVo.setTaskStatus("延期");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.SCHOOL)){
+                taskExcelVo.setTaskLevel("校");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.CITY)){
+                taskExcelVo.setTaskLevel("市");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.PROVINCE)){
+                taskExcelVo.setTaskLevel("省");
+            }
+            if(taskListVo.getTaskLevel().equals(TaskLevelTypeEnums.COUNTRY)){
+                taskExcelVo.setTaskLevel("国");
+            }
+            taskExcelVos.add(taskExcelVo);
+        }
+//        ExcelUtil<TaskListVo> util = new ExcelUtil<TaskListVo>(TaskListVo.class);
+//        return util.exportExcel(taskListVos, "task");
+        ExcelUtil<TaskExcelVo> util = new ExcelUtil<TaskExcelVo>(TaskExcelVo.class);
+        return util.exportExcel(taskExcelVos, "task");
     }
 
 
