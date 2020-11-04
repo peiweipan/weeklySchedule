@@ -21,6 +21,7 @@ import com.weekly.user.pojo.vo.UserListVo;
 import com.weekly.user.service.UserService;
 import com.weekly.workdays.mapper.WorkDaysSettingMapper;
 import io.swagger.models.auth.In;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -192,7 +193,6 @@ public class SummaryServiceImpl implements SummaryService {
 
         List<HalfYearPerformanceVo> firstHalfYear = summaryMapper.getWeeklyPerformanceHalfYear(userId, first);
         List<HalfYearPerformanceVo> secondHalfYear = summaryMapper.getWeeklyPerformanceHalfYear(userId, second);
-
 
         ALLYearPerformanceVo allYearPerformanceVo = new ALLYearPerformanceVo();
         allYearPerformanceVo.setFirstHalfYear(firstHalfYear);

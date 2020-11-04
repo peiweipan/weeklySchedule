@@ -58,7 +58,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         User user = new User();
 
         String nickname = getRandomString(7);
-        user.setUsername(username);
+        user.setUsername(nickname);//设置成跟nickname一样，暂且不用微信名
         user.setNickname(nickname);
         user.setPassword(PassWordUtils.encryptPassword("123456"));
 //        user.setUnionId(result.getUnionid());
@@ -68,7 +68,7 @@ public class LoginBusinessImpl implements LoginBusiness {
 //        userService.add(user);
 
         RegisterBO registerBO = new RegisterBO();
-        registerBO.setUsername(username);
+        registerBO.setUsername(nickname);//设置成跟nickname一样，暂且不用微信名
         registerBO.setNickname(nickname);
         registerBO.setPassword(PassWordUtils.encryptPassword("123456"));
         registerBO.setOpenId(result.getOpenid());

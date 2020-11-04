@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class HalfYearPerformanceVo {
 
-    private String week;
+    private Integer week;
 
     private Integer HalfYearPerformance;
 }
