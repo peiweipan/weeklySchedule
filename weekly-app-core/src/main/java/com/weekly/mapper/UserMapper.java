@@ -36,4 +36,7 @@ public interface UserMapper extends BaseMapper<User> {
     List<Long> getAllGeneralUserId();
 
     List<User> getUserByIds(List<Long> userIds);
+
+    void updateUsername(String username,Long id);
+
 }

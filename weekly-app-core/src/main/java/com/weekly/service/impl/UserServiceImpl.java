@@ -84,4 +84,9 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.getUserById(id);
         return user.getIsAdmin();
     }
+
+    @Override
+    public void updateUsername(String username,Long id) {
+        userMapper.updateUsername(username,id);
+    }
 }

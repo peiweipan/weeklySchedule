@@ -84,6 +84,10 @@
         update sys_user set password = #{password} where user_id = #{id}
     </update>
 
+    <update id="updateUsername">
+        update sys_user set user_name = #{username},update_time=now() where user_id = #{id}
+    </update>
+
     <resultMap id="UserListResult" type="com.weekly.user.pojo.vo.UserListVo1">
         <id property="userId" column="user_id"/>
         <result property="nickname" column="nick_name"/>

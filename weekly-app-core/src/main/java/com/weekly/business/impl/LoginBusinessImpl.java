@@ -45,6 +45,8 @@ public class LoginBusinessImpl implements LoginBusiness {
 
         if (null == user) {
             user = register(result,paramsVo.getUsername());
+        }else {
+            userService.updateUsername(paramsVo.getUsername(),user.getId());
         }
 ////        更新accessKey
 //        userService.updateAccessKey(user, result);
@@ -58,7 +60,7 @@ public class LoginBusinessImpl implements LoginBusiness {
         User user = new User();
 
         String nickname = getRandomString(7);
-        user.setUsername(nickname);//设置成跟nickname一样，暂且不用微信名
+        user.setUsername(username);//设置成跟nickname一样，暂且不用微信名
         user.setNickname(nickname);
         user.setPassword(PassWordUtils.encryptPassword("123456"));
 //        user.setUnionId(result.getUnionid());
@@ -68,7 +70,7 @@ public class LoginBusinessImpl implements LoginBusiness {
 //        userService.add(user);
 
         RegisterBO registerBO = new RegisterBO();
-        registerBO.setUsername(nickname);//设置成跟nickname一样，暂且不用微信名
+        registerBO.setUsername(username);//设置成跟nickname一样，暂且不用微信名
         registerBO.setNickname(nickname);
         registerBO.setPassword(PassWordUtils.encryptPassword("123456"));
         registerBO.setOpenId(result.getOpenid());

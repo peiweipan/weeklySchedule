@@ -25,4 +25,6 @@ public interface UserService {
     List<User> getUserByIds(List<Long> userIds);
 
     Integer ifAdimin(Long id);
+
+    void updateUsername(String username,Long id);
 }
